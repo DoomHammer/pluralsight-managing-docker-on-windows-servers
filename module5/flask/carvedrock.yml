@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: workout-gateway
+  name: workout-gateway
+spec:
+  selector:
+    matchLabels:
+      app: workout-gateway
+  template:
+    metadata:
+      labels:
+        app: workout-gateway
+    spec:
+      containers:
+      - image: docker.io/doomhammer/carvedrock:workout-gateway-nanoserver1809
+        imagePullPolicy: Always
+        name: workout-gateway
+      imagePullSecrets:
+      - name: regcred
+      restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/os: windows
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: workout-gateway
+  name: workout-gateway
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: workout-gateway
+  type: ClusterIP

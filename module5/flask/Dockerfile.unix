@@ -1,0 +1,31 @@
+FROM node:10.17-alpine AS front
+
+ADD front/package.json front/yarn.lock front/.yarnrc /app/
+
+WORKDIR /app
+
+RUN yarn
+
+COPY front/ /app/
+
+ENV PUBLIC_URL=/static
+
+RUN npx react-scripts build
+
+FROM alpine
+
+RUN apk add --no-cache python3 py-pip
+
+ADD requirements.txt /app/requirements.txt
+
+RUN pip3 install -r /app/requirements.txt
+
+ADD . /app/
+
+ENV PORT=8000
+
+EXPOSE 8000
+
+COPY --from=front /app/build/ /app/static/
+
+CMD python3 /app/main.py

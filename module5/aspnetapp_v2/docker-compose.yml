@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+    web:
+        build: .
+        ports:
+            - "8000:80"
+        depends_on:
+            - db
+    db:
+        image: dwwx/sql-server:2017
+        environment:
+            SA_PASSWORD: "ThisCourseIsAwesomeAndILoveIt!"
+            ACCEPT_EULA: "Y"
